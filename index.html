@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Website Pembelajaran Informatika - Modul Ajar</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.min.js"></script>
+  <style>
+    /* Reset dasar */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: Arial, sans-serif; background: #f4f4f4; color: #333; line-height: 1.6; }
+    
+    header { 
+      background: #007BFF; 
+      color: white; 
+      padding: 20px; 
+      text-align: center; 
+    }
+    
+    nav { 
+      background: #0056b3; 
+      padding: 10px; 
+    }
+    nav ul { 
+      list-style: none; 
+      display: flex; 
+      justify-content: center; 
+      gap: 15px; 
+      flex-wrap: wrap;
+    }
+    nav ul li a { 
+      color: white; 
+      text-decoration: none; 
+      font-weight: bold; 
+    }
+    
+    /* Container layout */
+    .container {
+      display: flex;
+      margin: 20px;
+      gap: 20px;
+    }
+    .sidebar {
+      width: 25%;
+      background: white;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    .sidebar h2 {
+      margin-bottom: 15px;
+      font-size: 18px;
+      color: #007BFF;
+    }
+    .sidebar ul {
+      list-style: none;
+    }
+    .sidebar ul li {
+      margin-bottom: 10px;
+    }
+    .sidebar ul li a {
+      text-decoration: none;
+      color: #007BFF;
+      font-weight: bold;
+    }
+    .content {
+      flex: 1;
+      background: white;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    .content h2 {
+      margin-bottom: 15px;
+      color: #007BFF;
+    }
+    .module-list {
+      list-style: none;
+      margin-bottom: 20px;
+    }
+    .module-list li {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+    .module-list li a {
+      text-decoration: none;
+      color: #007BFF;
+      font-weight: bold;
+    }
+    #modulePreview {
+      margin-top: 20px;
+    }
+    #modulePreview h3 {
+      margin-bottom: 10px;
+      color: #007BFF;
+    }
+    #pdfViewer {
+      width: 100%;
+      border: 1px solid #ccc;
+      overflow: auto;
+    }
+    #pdfCanvas { 
+      display: block; 
+      margin: 0 auto; 
+    }
+    #loading {
+      text-align: center; 
+      padding: 20px; 
+    }
+    .nav-buttons {
+      text-align: center; 
+      margin-top: 10px;
+    }
+    .nav-buttons button {
+      padding: 10px 15px; 
+      margin: 0 10px; 
+      background: #007BFF; 
+      border: none; 
+      color: white; 
+      border-radius: 5px; 
+      cursor: pointer;
+    }
+    .nav-buttons button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    
+    footer {
+      text-align: center;
+      background: #007BFF;
+      color: white;
+      padding: 10px;
+      margin-top: 20px;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        margin: 10px;
+      }
+      .sidebar {
+        width: 100%;
+      }
+      .content {
+        width: 100%;
+      }
+      nav ul {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Website Pembelajaran Informatika</h1>
+  </header>
+
+  <nav>
+    <ul>
+      <li><a href="#">Beranda</a></li>
+      <li><a href="#">Profil</a></li>
+      <li><a href="#">Perangkat Ajar</a></li>
+      <li><a href="#">Modul Ajar</a></li>
+      <li><a href="#">Kontak</a></li>
+    </ul>
+  </nav>
+
+  <div class="container">
+    <div class="sidebar">
+      <h2>Menu</h2>
+      <ul>
+        <li><a href="#">Dashboard</a></li>
+        <li><a href="#">Modul Ajar</a></li>
+        <li><a href="#">Materi Pelajaran</a></li>
+        <li><a href="#">Ujian</a></li>
+      </ul>
+    </div>
+
+    <div class="content">
+      <h2>Modul Ajar</h2>
+      <p>Berikut adalah daftar modul ajar yang tersedia:</p>
+      <ul class="module-list">
+        <li><a href="#" onclick="loadPDF('modul/Algoritma dan Pemrograman.pdf')">Modul 1: Algoritma dan Pemrograman</a></li>
+        <li><a href="#" onclick="loadPDF('modul/Analisis Data.pdf')">Modul 2: Analisis Data</a></li>
+        <li><a href="#" onclick="loadPDF('modul/Dampak sosial Informatika.pdf')">Modul 3: Dampak Sosial Informatika</a></li>
+        <li><a href="#" onclick="loadPDF('modul/Informatika dan keterampilan generik.pdf')">Modul 4: Informatika dan Keterampilan Generik</a></li>
+        <li><a href="#" onclick="loadPDF('modul/Jaringan komputer dan internet.pdf')">Modul 5: Jaringan Komputer dan Internet</a></li>
+      </ul>
+
+      <div id="modulePreview">
+        <h3>Preview Modul</h3>
+        <div id="pdfViewer">
+          <div id="loading" style="display: none;">Sedang memuat PDF...</div>
+          <canvas id="pdfCanvas"></canvas>
+        </div>
+        <div class="nav-buttons">
+          <button id="prevPage" onclick="onPrevPage()">Sebelumnya</button>
+          <span id="pageInfo"></span>
+          <button id="nextPage" onclick="onNextPage()">Selanjutnya</button>
+        </div>
+        <div id="errorMsg" style="color: red; display: none;"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Website Pembelajaran Informatika. All rights reserved.</p>
+  </footer>
+
+  <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.worker.min.js';
+
+    let pdfDoc = null,
+        currentPage = 1,
+        totalPages = 0,
+        canvas = document.getElementById('pdfCanvas'),
+        ctx = canvas.getContext('2d');
+
+    async function loadPDF(pdfUrl) {
+      const loading = document.getElementById('loading');
+      const errorMsg = document.getElementById('errorMsg');
+      errorMsg.style.display = 'none';
+      loading.style.display = 'block';
+      
+      try {
+        const loadingTask = pdfjsLib.getDocument({ url: pdfUrl, withCredentials: false });
+        pdfDoc = await loadingTask.promise;
+        totalPages = pdfDoc.numPages;
+        currentPage = 1;
+        renderPage(currentPage);
+      } catch (err) {
+        loading.style.display = 'none';
+        errorMsg.style.display = 'block';
+        errorMsg.textContent = `Error: ${err.message}`;
+        console.error('PDF load error:', err);
+      }
+    }
+
+    async function renderPage(num) {
+      const loading = document.getElementById('loading');
+      const errorMsg = document.getElementById('errorMsg');
+      loading.style.display = 'block';
+      errorMsg.style.display = 'none';
+      
+      try {
+        const page = await pdfDoc.getPage(num);
+        const viewport = page.getViewport({ scale: 1.5 });
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+        const renderContext = { canvasContext: ctx, viewport: viewport };
+        await page.render(renderContext).promise;
+        document.getElementById('pageInfo').textContent = `Halaman ${num} dari ${totalPages}`;
+      } catch (err) {
+        errorMsg.style.display = 'block';
+        errorMsg.textContent = `Error: ${err.message}`;
+        console.error('Render page error:', err);
+      } finally {
+        loading.style.display = 'none';
+      }
+    }
+
+    function onPrevPage() {
+      if (currentPage <= 1) return;
+      currentPage--;
+      renderPage(currentPage);
+    }
+
+    function onNextPage() {
+      if (currentPage >= totalPages) return;
+      currentPage++;
+      renderPage(currentPage);
+    }
+  </script>
+</body>
+</html>
